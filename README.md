@@ -93,3 +93,8 @@ Vercel doesn't keep writes to the local filesystem, so production uses [Turso](h
 - `app/deals/[id]/`: deal page and the mark-done / undo server actions.
 - `app/b/[token]/page.tsx`: buyer link.
 - `scripts/seed.ts`: made-up data.
+
+## Docs
+
+- [Design spec](docs/design-spec.md): process model, derived-state rules, screen-by-screen behaviour, visual design, edge cases, privacy.
+- [Implementation plan](docs/implementation-plan.md): architecture, how v1 was delivered, testing, and the phased path to production.
