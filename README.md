@@ -82,6 +82,7 @@ Vercel doesn't keep writes to the local filesystem, so production uses [Turso](h
 1. Create a Turso database and copy its URL and auth token.
 2. Seed it from your machine: `TURSO_DATABASE_URL=... TURSO_AUTH_TOKEN=... npm run db:seed`
 3. Import the repo in Vercel and set the same two environment variables.
+4. Optional: set `DEMO_PHONE` to a number you own. The seeded phone numbers are made up, and this sends every WhatsApp button to that one number instead.
 
 ## Code map
 

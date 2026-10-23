@@ -37,6 +37,12 @@ export function firstName(fullName: string): string {
   return fullName.split(" ")[0];
 }
 
+/**
+ * WhatsApp chat link for a contact. The seeded phone numbers are made up, so
+ * on a public demo set DEMO_PHONE to route every WhatsApp button to one real
+ * number instead of a stranger's. Server-side only (reads process.env).
+ */
 export function waLink(phone: string): string {
-  return `https://wa.me/${phone.replace(/[^\d]/g, "")}`;
+  const target = process.env.DEMO_PHONE || phone;
+  return `https://wa.me/${target.replace(/[^\d]/g, "")}`;
 }
