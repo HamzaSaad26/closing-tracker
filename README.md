@@ -1,6 +1,6 @@
 # Closing Tracker: from "reserved" to signed SPA
 
-**Live:** [link]  ·  **Repo:** [link]
+**Live:** [closing-tracker-ruby.vercel.app](https://closing-tracker-ruby.vercel.app)  ·  **Repo:** [github.com/HamzaSaad26/closing-tracker](https://github.com/HamzaSaad26/closing-tracker)
 
 ## The problem
 
