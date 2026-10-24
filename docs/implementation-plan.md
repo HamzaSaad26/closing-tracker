@@ -51,6 +51,8 @@ The efforts are rough, for one developer. Documents, e-signature and payments co
 | Nice to have | Status |
 | --- | --- |
 | WhatsApp buttons go to one real number on the demo (`DEMO_PHONE`) | ✅ Done |
+| **Reset demo data** in the account menu, so reviewers can click freely; rebuilds in one transaction, links stay the same | ✅ Done |
+| Logins | ✂️ Deliberately left out of the demo, first thing in scope 2 |
 | A broker view | ✂️ Cut, moved to scope 4 |
 | An AI-drafted chase message | ✂️ Cut |
 | More analytics (where deals stall, cancellations) | ✂️ Cut |

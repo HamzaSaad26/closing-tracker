@@ -69,7 +69,7 @@ npm run dev
 
 Open http://localhost:3000 for the deals board. On any deal page, "Open buyer link" shows that buyer's view.
 
-The seed dates are relative to the moment you run it, so run `npm run db:seed` again any time to reset the demo.
+The seed dates are relative to the moment you run it. To reset the demo, either run `npm run db:seed` again or use **Reset demo data** in the account menu (top right). Deal ids and buyer links stay the same after a reset, so shared links keep working.
 
 ```bash
 npm test          # unit tests for the stage and deadline logic
@@ -92,7 +92,7 @@ Vercel doesn't keep writes to the local filesystem, so production uses [Turso](h
 - `app/page.tsx`: deals board.
 - `app/deals/[id]/`: deal page and the mark-done / undo server actions.
 - `app/b/[token]/page.tsx`: buyer link.
-- `scripts/seed.ts`: made-up data.
+- `lib/seed.ts`: made-up data, used by `npm run db:seed` and by the Reset demo data action (`app/actions.ts`).
 
 ## Docs
 

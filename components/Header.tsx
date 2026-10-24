@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AccountMenu } from "@/components/AccountMenu";
 import { PROJECT } from "@/lib/steps";
 
 export function Logo() {
@@ -19,14 +20,7 @@ export function Header() {
           <Logo />
           <span className="text-[17px] font-semibold tracking-[-0.02em]">Closing Tracker</span>
         </Link>
-        <div className="flex items-center gap-2 rounded-full border border-line bg-white/70 py-1.5 pl-2.5 pr-3.5 text-sm shadow-[0_1px_2px_rgba(16,22,36,0.05)]">
-          <span className="relative flex h-2 w-2" aria-hidden>
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-50" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-live" />
-          </span>
-          <span className="font-medium">{PROJECT.name}</span>
-          <span className="hidden text-faint sm:inline">· Sales admin</span>
-        </div>
+        <AccountMenu name={PROJECT.salesContact.name} role={PROJECT.salesContact.role} project={PROJECT.name} />
       </div>
     </header>
   );

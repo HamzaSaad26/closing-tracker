@@ -28,7 +28,7 @@ Closing Tracker gives the sales admin **one board of every reserved deal**, show
 | **Deals board** | Every reserved deal in columns by stage. Each card shows the next step, whose turn it is and how many days are left. Late deals have a red outline. |
 | **Deal page** | The checklist for one deal. The admin marks steps done (or undoes the last one), sees who to chase, and reads the history. |
 | **Buyer link** | A phone-first page for the buyer: what's done, what's next, what we need from them, by when, and who to ask. |
-| **Demo data** | 25 made-up deals at every stage, some on time and some late, with dates relative to today. |
+| **Demo data** | 25 made-up deals at every stage, some on time and some late, with dates relative to today. **Reset demo data** in the account menu puts them back; deal pages and buyer links stay the same. |
 
 ## 4. What is NOT in v1
 
