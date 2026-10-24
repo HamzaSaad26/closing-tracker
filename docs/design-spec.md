@@ -117,21 +117,25 @@ Every screen has one obvious main action.
 
 ## 11. How it looks
 
-Plain, light and calm. The colour tells you something.
+Calm, light and glassy, so it sits naturally next to the Parallex product. Frosted white panels float on a misty blue-grey background with soft blue glows. The colour always tells you something.
 
 | Colour | Means |
 | --- | --- |
-| Off-white background, white cards | Everything neutral |
-| Deep teal | Actions, progress, steps done |
+| Misty blue-grey background, frosted white panels | Everything neutral |
+| **Deep navy** (`#101624`) | The main action on each screen: Mark done, Open buyer link, WhatsApp |
+| **Blue scale** (`#506FB3` → `#678EE5`) | Numbers, progress, steps done |
 | **Amber** | Buyer's turn |
 | **Purple** | Broker's turn |
 | **Blue** | Developer's turn |
 | **Red** | Late. Nothing else. |
 
-- System font; numbers line up (tabular figures).
-- The board uses columns, like Trello or Pipedrive, so nobody has to learn it.
-- The buyer page is one narrow column, built for a phone, because buyers open it from WhatsApp.
-- Dates are always Dubai time.
+- **Glass:** panels are translucent white with a background blur, a hairline border and a long, soft shadow. Nothing has a hard edge.
+- **Shapes:** pill buttons and tabs; big rounded corners (16–28px).
+- **Type:** Inter Tight, a tight modern grotesk. Headlines and big numbers are set large with tight letter-spacing; numbers line up (tabular figures).
+- **The "whose turn" bar** on a deal is a solid navy strip, so it's the first thing you read.
+- **The buyer page** opens on a deep blue gradient card ("Hi Sara") with the next step floating over it as a frosted card. It's one narrow column, built for a phone, because buyers open it from WhatsApp.
+- **The board** uses columns, like Trello or Pipedrive, so nobody has to learn it.
+- **Dates** are always Dubai time.
 
 ## 12. Still open
 

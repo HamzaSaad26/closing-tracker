@@ -22,16 +22,16 @@ export function BuyerLinkButtons({ token }: { token: string }) {
         href={path}
         target="_blank"
         rel="noreferrer"
-        className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent/90"
+        className="rounded-full bg-ink px-4 py-2 text-sm font-medium text-white shadow-[0_8px_18px_-10px_rgba(16,22,36,0.9)] transition hover:bg-ink/85"
       >
         Open buyer link ↗
       </a>
       <button
         type="button"
         onClick={copy}
-        className="rounded-md border border-line bg-surface px-3 py-1.5 text-sm font-medium hover:border-ink/30"
+        className="rounded-full border border-line bg-white/80 px-4 py-2 text-sm font-medium shadow-[0_1px_2px_rgba(16,22,36,0.05)] backdrop-blur transition hover:bg-white"
       >
-        {copied ? "Copied" : "Copy link"}
+        {copied ? "Copied ✓" : "Copy link"}
       </button>
     </div>
   );

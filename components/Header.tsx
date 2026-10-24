@@ -1,17 +1,31 @@
 import Link from "next/link";
 import { PROJECT } from "@/lib/steps";
 
+export function Logo() {
+  return (
+    <span className="field grid h-8 w-8 place-items-center rounded-[10px] shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_6px_14px_-6px_rgba(59,86,144,0.7)]">
+      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" aria-hidden>
+        <path d="M4 10.5l3.5 3.5L16 5.5" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  );
+}
+
 export function Header() {
   return (
-    <header className="border-b border-line bg-surface">
+    <header className="glass-bar sticky top-0 z-30 border-b border-line/80">
       <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="grid h-7 w-7 place-items-center rounded-md bg-accent text-sm font-bold text-white">C</span>
-          <span className="font-semibold">Closing Tracker</span>
+          <Logo />
+          <span className="text-[17px] font-semibold tracking-[-0.02em]">Closing Tracker</span>
         </Link>
-        <div className="text-right text-sm leading-tight">
-          <div className="font-medium">{PROJECT.name}</div>
-          <div className="text-muted">Sales admin view</div>
+        <div className="flex items-center gap-2 rounded-full border border-line bg-white/70 py-1.5 pl-2.5 pr-3.5 text-sm shadow-[0_1px_2px_rgba(16,22,36,0.05)]">
+          <span className="relative flex h-2 w-2" aria-hidden>
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-50" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-live" />
+          </span>
+          <span className="font-medium">{PROJECT.name}</span>
+          <span className="hidden text-faint sm:inline">· Sales admin</span>
         </div>
       </div>
     </header>

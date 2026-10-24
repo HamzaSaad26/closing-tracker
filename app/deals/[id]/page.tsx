@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BuyerLinkButtons } from "@/components/BuyerLinkButtons";
 import { Header } from "@/components/Header";
 import { OwnerBadge } from "@/components/OwnerBadge";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { getDeal, listEvents } from "@/lib/deals";
 import { dueText, fmtAed, fmtDate, fmtDateTime, plural, waLink } from "@/lib/format";
 import { completeStep, undoStep } from "./actions";
@@ -22,46 +23,53 @@ export default async function DealPage({ params }: { params: Promise<{ id: strin
   return (
     <>
       <Header />
-      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
-        <Link href="/" className="text-sm text-muted hover:text-ink">
+      <main className="mx-auto max-w-5xl px-4 pb-12 pt-6 sm:px-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm text-muted transition hover:bg-white/70 hover:text-ink"
+        >
           ← All deals
         </Link>
 
-        <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
+        <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                {deal.unit} <span className="font-normal text-muted">· {deal.unitType}</span>
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="display text-4xl">
+                {deal.unit} <span className="font-normal text-faint">· {deal.unitType}</span>
               </h1>
               <StageBadge stage={state.stage} atRisk={state.atRisk} />
             </div>
-            <p className="mt-1 text-sm text-muted">
-              {deal.buyerName} · {fmtAed(deal.priceAed)} · reserved {fmtDate(deal.reservedAt)}
+            <p className="mt-2 text-[15px] text-muted">
+              {deal.buyerName} · <span className="tabular">{fmtAed(deal.priceAed)}</span> · reserved{" "}
+              {fmtDate(deal.reservedAt)}
             </p>
           </div>
           <BuyerLinkButtons token={deal.buyerToken} />
         </div>
 
         {state.next && (
-          <div
-            className={`mt-5 rounded-lg border px-4 py-3 text-sm ${
-              state.atRisk ? "border-risk/30 bg-risk-soft" : "border-line bg-surface"
-            }`}
-          >
-            <span className="font-semibold">Whose turn: </span>
-            <OwnerBadge owner={state.next.def.owner} /> <span className="ml-1">{state.next.def.label}</span>
-            <span className={state.atRisk ? "font-semibold text-risk" : "text-muted"}>
-              {" "}
-              — {dueText(state.daysToDue!)} ({fmtDate(state.next.dueAt)})
-            </span>
-            <span className="text-muted"> · {plural(state.daysInStage, "day")} in this stage</span>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-ink px-5 py-3.5 text-sm text-white shadow-[0_18px_40px_-20px_rgba(16,22,36,0.8)]">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="text-white/60">Whose turn</span>
+              <OwnerBadge owner={state.next.def.owner} tone="dark" />
+              <span className="font-medium">{state.next.def.label}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {state.atRisk && <span className="h-2 w-2 rounded-full bg-risk-dot" aria-hidden />}
+              <span className={`tabular font-semibold ${state.atRisk ? "text-[#ff8a98]" : ""}`}>
+                {dueText(state.daysToDue!)}
+              </span>
+              <span className="text-white/50">
+                · {fmtDate(state.next.dueAt)} · {plural(state.daysInStage, "day")} in stage
+              </span>
+            </div>
           </div>
         )}
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
-          <section>
-            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">Checklist</h2>
-            <ol className="overflow-hidden rounded-lg border border-line bg-surface">
+        <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_330px]">
+          <section className="glass rounded-[24px] p-2">
+            <h2 className="px-3 pb-2 pt-2 text-[13px] font-semibold">Checklist</h2>
+            <ol className="flex flex-col gap-1">
               {state.steps.map((step, i) => {
                 const done = step.doneAt !== null && i < state.doneCount;
                 const isNext = i === state.doneCount;
@@ -71,29 +79,39 @@ export default async function DealPage({ params }: { params: Promise<{ id: strin
                 return (
                   <li
                     key={step.def.key}
-                    className={`flex items-start gap-3 border-b border-line px-4 py-3.5 last:border-b-0 ${
-                      isNext ? "bg-accent-soft/50" : ""
+                    className={`flex items-center gap-3 rounded-2xl px-3 py-3 ${
+                      isNext ? "bg-white shadow-[var(--shadow-float)]" : ""
                     }`}
                   >
                     <span
                       aria-hidden
-                      className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border text-[11px] font-bold ${
+                      className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-semibold ${
                         done
-                          ? "border-accent bg-accent text-white"
+                          ? "field text-white shadow-[0_4px_10px_-4px_rgba(59,86,144,0.8)]"
                           : overdue
-                            ? "border-risk text-risk"
-                            : "border-line text-muted"
+                            ? "bg-risk-soft text-risk ring-1 ring-risk-dot/50"
+                            : isNext
+                              ? "bg-accent-soft text-accent-deep ring-1 ring-accent/30"
+                              : "bg-white/70 text-faint ring-1 ring-line"
                       }`}
                     >
-                      {done ? "✓" : i + 1}
+                      {done ? (
+                        <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none">
+                          <path d="M4 10.5l3.5 3.5L16 5.5" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      ) : (
+                        i + 1
+                      )}
                     </span>
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className={`font-medium ${done ? "" : isNext ? "" : "text-muted"}`}>{step.def.label}</span>
+                        <span className={`text-[15px] font-medium ${done || isNext ? "" : "text-muted"}`}>
+                          {step.def.label}
+                        </span>
                         <OwnerBadge owner={step.def.owner} />
                       </div>
-                      <div className="tabular mt-0.5 text-xs text-muted">
+                      <div className="tabular mt-0.5 text-xs text-faint">
                         {done ? (
                           <>
                             Done {fmtDateTime(step.doneAt!)}
@@ -107,7 +125,7 @@ export default async function DealPage({ params }: { params: Promise<{ id: strin
                           </>
                         ) : (
                           <span className={overdue ? "font-semibold text-risk" : ""}>
-                            Due {fmtDate(step.dueAt)} (day {step.def.dueDay})
+                            Due {fmtDate(step.dueAt)} · day {step.def.dueDay}
                           </span>
                         )}
                       </div>
@@ -115,14 +133,14 @@ export default async function DealPage({ params }: { params: Promise<{ id: strin
 
                     {isNext && (
                       <form action={completeStep.bind(null, deal.id, step.def.key)}>
-                        <button className="rounded-md bg-ink px-3 py-1.5 text-sm font-medium text-white hover:bg-ink/85">
+                        <button className="rounded-full bg-ink px-4 py-2 text-sm font-medium text-white shadow-[0_8px_18px_-10px_rgba(16,22,36,0.9)] transition hover:bg-ink/85">
                           Mark done
                         </button>
                       </form>
                     )}
                     {isLastDone && (
                       <form action={undoStep.bind(null, deal.id, step.def.key)}>
-                        <button className="rounded-md px-2 py-1.5 text-xs text-muted hover:bg-paper hover:text-ink">
+                        <button className="rounded-full px-3 py-1.5 text-xs font-medium text-muted transition hover:bg-white hover:text-ink">
                           Undo
                         </button>
                       </form>
@@ -133,22 +151,23 @@ export default async function DealPage({ params }: { params: Promise<{ id: strin
             </ol>
           </section>
 
-          <aside className="space-y-6">
-            <section>
-              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">People</h2>
-              <div className="divide-y divide-line rounded-lg border border-line bg-surface text-sm">
-                <Person role="Buyer" name={deal.buyerName} phone={deal.buyerPhone} />
-                <Person role={`Broker · ${deal.broker.agency}`} name={deal.broker.name} phone={deal.broker.phone} />
+          <aside className="flex flex-col gap-5">
+            <section className="glass rounded-[24px] p-2">
+              <h2 className="px-3 pb-2 pt-2 text-[13px] font-semibold">People</h2>
+              <div className="flex flex-col gap-1">
+                <Person role="Buyer" name={deal.buyerName} href={waLink(deal.buyerPhone)} />
+                <Person role={`Broker · ${deal.broker.agency}`} name={deal.broker.name} href={waLink(deal.broker.phone)} />
               </div>
             </section>
 
-            <section>
-              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">Activity</h2>
-              <ol className="space-y-3 rounded-lg border border-line bg-surface px-4 py-3 text-sm">
+            <section className="glass rounded-[24px] p-2">
+              <h2 className="px-3 pb-2 pt-2 text-[13px] font-semibold">Activity</h2>
+              <ol className="flex flex-col gap-3 px-3 pb-3 text-sm">
                 {eventRows.map((e) => (
-                  <li key={e.id}>
-                    <div>{e.message}</div>
-                    <div className="tabular text-xs text-muted">
+                  <li key={e.id} className="relative pl-4">
+                    <span className="absolute left-0 top-[7px] h-1.5 w-1.5 rounded-full bg-accent-2" aria-hidden />
+                    <div className="leading-snug">{e.message}</div>
+                    <div className="tabular mt-0.5 text-xs text-faint">
                       {fmtDateTime(e.at)} · {e.actor}
                     </div>
                   </li>
@@ -165,31 +184,25 @@ export default async function DealPage({ params }: { params: Promise<{ id: strin
 function StageBadge({ stage, atRisk }: { stage: string; atRisk: boolean }) {
   return (
     <span
-      className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-        atRisk ? "bg-risk-soft text-risk" : "bg-accent-soft text-accent"
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+        atRisk ? "bg-risk-soft text-risk" : "bg-accent-soft text-accent-deep"
       }`}
     >
+      <span className={`h-1.5 w-1.5 rounded-full ${atRisk ? "bg-risk-dot" : "bg-accent"}`} aria-hidden />
       {stage}
       {atRisk ? " · at risk" : ""}
     </span>
   );
 }
 
-function Person({ role, name, phone }: { role: string; name: string; phone: string }) {
+function Person({ role, name, href }: { role: string; name: string; href: string }) {
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-3">
+    <div className="flex items-center justify-between gap-3 rounded-2xl bg-white/70 px-3 py-2.5">
       <div className="min-w-0">
-        <div className="text-xs text-muted">{role}</div>
+        <div className="text-xs text-faint">{role}</div>
         <div className="truncate font-medium">{name}</div>
       </div>
-      <a
-        href={waLink(phone)}
-        target="_blank"
-        rel="noreferrer"
-        className="shrink-0 rounded-md border border-line px-2.5 py-1 text-xs font-medium hover:border-ink/30"
-      >
-        WhatsApp
-      </a>
+      <WhatsAppButton href={href} />
     </div>
   );
 }

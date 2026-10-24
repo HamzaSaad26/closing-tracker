@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { WhatsAppIcon } from "@/components/WhatsAppButton";
 import { getDealByToken, type Deal } from "@/lib/deals";
 import { firstName, fmtAed, fmtDate, fmtLongDate, waLink } from "@/lib/format";
 import { DEPOSIT_RATE, PROJECT, STEPS } from "@/lib/steps";
@@ -24,33 +25,51 @@ export default async function BuyerPage({ params }: { params: Promise<{ token: s
   const total = STEPS.length;
 
   return (
-    <main className="mx-auto min-h-dvh max-w-md bg-surface px-5 pb-10 pt-6 sm:my-6 sm:min-h-0 sm:rounded-2xl sm:border sm:border-line">
-      <div className="text-xs font-medium uppercase tracking-wider text-muted">
-        {PROJECT.name} · {PROJECT.location}
+    <main className="mx-auto min-h-dvh max-w-md px-3 pb-10 pt-3 sm:pt-8">
+      {/* Hero */}
+      <section className="field-deep relative overflow-hidden rounded-[28px] px-6 pb-14 pt-6 text-white shadow-[0_30px_60px_-30px_rgba(34,52,90,0.9)]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:linear-gradient(rgba(255,255,255,.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.6)_1px,transparent_1px)] [background-size:28px_28px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
+        />
+        <div className="relative">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/70">
+            {PROJECT.name} · {PROJECT.location}
+          </div>
+          <h1 className="display mt-6 text-[44px]">Hi {firstName(deal.buyerName)},</h1>
+          <p className="mt-2 text-[17px] leading-snug text-white/80">
+            here&apos;s where your purchase of <span className="font-semibold text-white">unit {deal.unit}</span>{" "}
+            stands.
+          </p>
+
+          <div className="mt-7">
+            <div className="flex justify-between text-xs text-white/70">
+              <span className="font-medium text-white">
+                {state.complete ? "Complete" : `${state.doneCount} of ${total} steps done`}
+              </span>
+              <span>Reserved {fmtDate(deal.reservedAt)}</span>
+            </div>
+            <div className="mt-2 flex gap-1.5" aria-hidden>
+              {STEPS.map((s, i) => (
+                <div
+                  key={s.key}
+                  className={`h-1.5 flex-1 rounded-full ${
+                    i < state.doneCount ? "bg-white shadow-[0_0_12px_rgba(255,255,255,0.6)]" : "bg-white/20"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="relative -mt-9 px-1">
+        <NextStepCard deal={deal} />
       </div>
 
-      <h1 className="mt-4 text-2xl font-semibold leading-tight tracking-tight">Hi {firstName(deal.buyerName)},</h1>
-      <p className="mt-1 text-muted">
-        Here&apos;s where your purchase of <span className="font-medium text-ink">unit {deal.unit}</span> stands.
-      </p>
-
-      <div className="mt-5">
-        <div className="flex justify-between text-xs text-muted">
-          <span>{state.complete ? "Complete" : `${state.doneCount} of ${total} steps done`}</span>
-          <span>Reserved {fmtDate(deal.reservedAt)}</span>
-        </div>
-        <div className="mt-1.5 flex gap-1" aria-hidden>
-          {STEPS.map((s, i) => (
-            <div key={s.key} className={`h-1.5 flex-1 rounded-full ${i < state.doneCount ? "bg-accent" : "bg-line"}`} />
-          ))}
-        </div>
-      </div>
-
-      <NextStepCard deal={deal} />
-
-      <section className="mt-8">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">Your timeline</h2>
-        <ol className="mt-3">
+      <section className="glass mt-4 rounded-[24px] px-5 py-5">
+        <h2 className="text-[13px] font-semibold">Your timeline</h2>
+        <ol className="mt-4">
           <TimelineItem title="Unit reserved" detail={fmtDate(deal.reservedAt)} status="done" />
           {state.steps.map((s, i) => (
             <TimelineItem
@@ -64,27 +83,20 @@ export default async function BuyerPage({ params }: { params: Promise<{ token: s
         </ol>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">Questions?</h2>
-        <div className="mt-3 space-y-2">
-          <Contact
-            role="Your broker"
-            name={deal.broker.name}
-            detail={deal.broker.agency}
-            phone={deal.broker.phone}
-          />
+      <section className="mt-4">
+        <h2 className="px-2 text-[13px] font-semibold">Questions?</h2>
+        <div className="mt-2 flex flex-col gap-2">
+          <Contact role="Your broker" name={deal.broker.name} detail={deal.broker.agency} href={waLink(deal.broker.phone)} />
           <Contact
             role={`${PROJECT.developer} sales team`}
             name={PROJECT.salesContact.name}
             detail={PROJECT.salesContact.role}
-            phone={PROJECT.salesContact.phone}
+            href={waLink(PROJECT.salesContact.phone)}
           />
         </div>
       </section>
 
-      <p className="mt-8 text-center text-xs text-muted">
-        This page is private to you. Please don&apos;t share the link.
-      </p>
+      <p className="mt-8 text-center text-xs text-faint">This page is private to you. Please don&apos;t share the link.</p>
     </main>
   );
 }
@@ -92,13 +104,21 @@ export default async function BuyerPage({ params }: { params: Promise<{ token: s
 function NextStepCard({ deal }: { deal: Deal }) {
   const { state } = deal;
   const next = state.next;
+
   if (!next) {
     return (
-      <div className="mt-6 rounded-xl bg-accent-soft p-5">
-        <div className="text-sm font-semibold text-accent">All done</div>
-        <p className="mt-1">
-          Your unit is registered with the Dubai Land Department. Your broker will be in touch about the payment plan
-          and handover.
+      <div className="glass rounded-[24px] bg-white/85 p-5">
+        <div className="flex items-center gap-2 text-sm font-semibold text-accent-deep">
+          <span className="field grid h-6 w-6 place-items-center rounded-full">
+            <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" aria-hidden>
+              <path d="M4 10.5l3.5 3.5L16 5.5" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          All done
+        </div>
+        <p className="mt-2 text-[15px] leading-relaxed">
+          Your unit is registered with the Dubai Land Department. Your broker will be in touch about the payment plan and
+          handover.
         </p>
       </div>
     );
@@ -110,35 +130,47 @@ function NextStepCard({ deal }: { deal: Deal }) {
     owner === "buyer" ? "What we need from you" : owner === "broker" ? "Your broker is on it" : "Nothing needed from you";
 
   return (
-    <div className={`mt-6 rounded-xl p-5 ${owner === "buyer" ? "bg-buyer-soft" : "bg-paper"}`}>
-      <div className={`text-sm font-semibold ${owner === "buyer" ? "text-buyer" : "text-muted"}`}>{heading}</div>
-      <div className="mt-1 text-lg font-semibold leading-snug">{next.def.buyerLabel}</div>
-      <p className="mt-2 text-[15px] leading-relaxed">{next.def.buyerNext}</p>
+    <div className="glass rounded-[24px] bg-white/85 p-5">
+      <div
+        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
+          owner === "buyer" ? "bg-buyer-soft text-buyer" : "bg-accent-soft text-accent-deep"
+        }`}
+      >
+        <span className={`h-1.5 w-1.5 rounded-full ${owner === "buyer" ? "bg-buyer-dot" : "bg-accent-2"}`} aria-hidden />
+        {heading}
+      </div>
+      <div className="mt-3 text-[22px] font-semibold leading-tight tracking-[-0.02em]">{next.def.buyerLabel}</div>
+      <p className="mt-2 text-[15px] leading-relaxed text-ink/85">{next.def.buyerNext}</p>
 
       {next.def.key === "deposit" && (
-        <p className="mt-2 text-[15px]">
-          Amount: <span className="tabular font-semibold">{fmtAed(Math.round(deal.priceAed * DEPOSIT_RATE))}</span>{" "}
-          <span className="text-muted">({Math.round(DEPOSIT_RATE * 100)}% of the price)</span>
-        </p>
+        <div className="mt-4 flex items-baseline justify-between rounded-2xl bg-mist px-4 py-3">
+          <span className="text-sm text-muted">Amount</span>
+          <span className="text-right">
+            <span className="tabular text-xl font-semibold tracking-[-0.02em] text-accent-deep">
+              {fmtAed(Math.round(deal.priceAed * DEPOSIT_RATE))}
+            </span>
+            <span className="block text-xs text-faint">{Math.round(DEPOSIT_RATE * 100)}% of the price</span>
+          </span>
+        </div>
       )}
 
-      <div className="mt-4 border-t border-black/5 pt-3 text-sm">
+      <div className="mt-4 border-t border-line pt-3 text-sm text-muted">
         {owner === "buyer" ? (
           late ? (
             <span>
-              This was due on <span className="font-semibold">{fmtLongDate(next.dueAt)}</span>. If something is
+              This was due on <span className="font-semibold text-ink">{fmtLongDate(next.dueAt)}</span>. If something is
               holding you up, message {firstName(deal.broker.name)} so we can help.
             </span>
           ) : (
             <span>
-              Please complete by <span className="font-semibold">{fmtLongDate(next.dueAt)}</span>.
+              Please complete by <span className="font-semibold text-ink">{fmtLongDate(next.dueAt)}</span>.
             </span>
           )
         ) : late ? (
           <span>This is taking a little longer than planned. {firstName(deal.broker.name)} can give you an update.</span>
         ) : (
           <span>
-            Expected by <span className="font-semibold">{fmtLongDate(next.dueAt)}</span>.
+            Expected by <span className="font-semibold text-ink">{fmtLongDate(next.dueAt)}</span>.
           </span>
         )}
       </div>
@@ -162,45 +194,62 @@ function TimelineItem({
       {!last && (
         <span
           aria-hidden
-          className={`absolute left-[9px] top-5 h-[calc(100%-12px)] w-px ${status === "done" ? "bg-accent" : "bg-line"}`}
+          className={`absolute left-[10px] top-6 h-[calc(100%-16px)] w-[2px] rounded-full ${
+            status === "done" ? "bg-accent-2/70" : "bg-line"
+          }`}
         />
       )}
       <span
         aria-hidden
-        className={`relative mt-0.5 grid h-[19px] w-[19px] shrink-0 place-items-center rounded-full border-2 text-[10px] font-bold ${
+        className={`relative mt-0.5 grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full ${
           status === "done"
-            ? "border-accent bg-accent text-white"
+            ? "field shadow-[0_4px_10px_-4px_rgba(59,86,144,0.8)]"
             : status === "current"
-              ? "border-accent bg-surface"
-              : "border-line bg-surface"
+              ? "bg-white ring-2 ring-accent"
+              : "bg-white ring-1 ring-line"
         }`}
       >
-        {status === "done" ? "✓" : status === "current" ? <span className="h-2 w-2 rounded-full bg-accent" /> : null}
+        {status === "done" ? (
+          <svg viewBox="0 0 20 20" className="h-3 w-3" fill="none">
+            <path d="M4 10.5l3.5 3.5L16 5.5" stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        ) : status === "current" ? (
+          <span className="h-2 w-2 rounded-full bg-accent" />
+        ) : null}
       </span>
       <div className="flex flex-1 items-baseline justify-between gap-3">
-        <span className={status === "upcoming" ? "text-muted" : status === "current" ? "font-semibold" : ""}>
+        <span
+          className={`text-[15px] ${
+            status === "upcoming" ? "text-faint" : status === "current" ? "font-semibold" : "text-ink"
+          }`}
+        >
           {title}
         </span>
-        <span className="tabular shrink-0 text-xs text-muted">{detail}</span>
+        <span className="tabular shrink-0 text-xs text-faint">{detail}</span>
       </div>
     </li>
   );
 }
 
-function Contact({ role, name, detail, phone }: { role: string; name: string; detail: string; phone: string }) {
+function Contact({ role, name, detail, href }: { role: string; name: string; detail: string; href: string }) {
   return (
     <a
-      href={waLink(phone)}
+      href={href}
       target="_blank"
       rel="noreferrer"
-      className="flex items-center justify-between gap-3 rounded-xl border border-line px-4 py-3 hover:border-ink/30"
+      className="glass flex items-center justify-between gap-3 rounded-[20px] px-4 py-3.5 transition hover:bg-white/90"
     >
       <div className="min-w-0">
-        <div className="text-xs text-muted">{role}</div>
-        <div className="truncate font-medium">{name}</div>
+        <div className="text-xs text-faint">{role}</div>
+        <div className="truncate font-semibold tracking-[-0.01em]">{name}</div>
         <div className="truncate text-xs text-muted">{detail}</div>
       </div>
-      <span className="shrink-0 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-white">WhatsApp</span>
+      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-xs font-semibold text-white">
+        <span className="text-wa">
+          <WhatsAppIcon />
+        </span>
+        WhatsApp
+      </span>
     </a>
   );
 }
